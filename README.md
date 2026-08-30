@@ -20,8 +20,27 @@ eBPF 学习仓库 —— 从内核层面理解并使用 eBPF（HFT / 嵌入式�
 | 01 | bpftrace 快速体感 | ✅ | Learning eBPF Ch1–2 入门 |
 | 02 | libbpf：手写第一个 BPF 程序（tracepoint，无 CO-RE 绕行方案） | ✅ | Ch3 + Ch6（verifier 实录）+ Ch5 §3.5（无 BTF 绕行） |
 | 03 | map / ringbuf 数据通道 → 《Learning eBPF》随书代码实验 | ✅ | lab03（map+ringbuf）+ lab04（bpf syscall strace 拆解，Ch4 §1–2）；CO-RE 待做 |
-| 04 | kprobe / XDP / tc 挂钩点实战 | ⬜ | Ch7 附加类型 + Ch8 网络 |
+| 04 | kprobe / uprobe / verifier 拒绝实验 / 网络 XDP | 🟡 | lab05（Ch6）+ lab06（Ch7/8）+ lab07（Ch10）+ lab08（Ch9） |
 | 05 | 延迟观测（sched、off-cpu、网络栈追踪） | ⬜ | Gregg 工具谱系 → HFT 落地 |
+
+## 《Learning eBPF》全书例子覆盖表
+
+随书仓库 [lizrice/learning-ebpf](https://github.com/lizrice/learning-ebpf) 的例子逐个在本仓库真机复刻（树莓派 5 / aarch64 / libbpf 1.5 / 无 vmlinux BTF）：
+
+| 书章 | 原书例子 | 本仓库实现 | 说明 |
+|---|---|---|---|
+| Ch2 | hello（tracepoint sys_enter_write） | lab02 | 改用 sys_enter_openat（TraceFS 手工 format 结构体绕行无 BTF） |
+| Ch2 | hello_map（按 uid 计数） | lab03 | 改按 pid 计数，另加 ringbuf 事件流 |
+| Ch2/Ch4 | hello_ring_buffer / hello_buffer_config | lab03 + lab04 | config+counts 双 hash，strace 拆解加载序列 |
+| Ch3 | bpftrace one-liners / clang -S 汇编对比 | lab01 | `-S -emit-llvm` 汇编对比并入 lab01 README |
+| Ch4 | bpf() syscall 与文件描述符 | lab04 | 50 个 bpf() 调用全景 + memfd placeholder fd 发现 |
+| Ch5 | CO-RE / vmlinux.h / BTF 重定位 | 结论回灌 | 无 vmlinux BTF 内核 CO-RE 不可用，替代路线见 hft Ch5 §3.5；bpftool btf dump 实验见 lab08 |
+| Ch6 | verifier 六类拒绝 | lab05 | 真机复刻故意失败的程序，抓一手拒绝日志 |
+| Ch7 | program types 全景（kprobe 路线） | lab06 | kprobe `do_sys_openat` + `PT_REGS` 宏 |
+| Ch8 | kprobe / uprobe / perf event 追踪 | lab06 | uprobe 挂 libc `strlen`/`malloc`，perf event 采样 |
+| Ch9 | security（LSM / seccomp BPF） | lab08 | seccomp filter 真机实验 + BPF LSM 可行性检测 |
+| Ch10 | networking（XDP / TC / socket filter） | lab07 | XDP 包计数 + 受控 DROP + SO_ATTACH_BPF |
+| Ch11 | 未来方向 | — | 无代码，笔记见 hft Ch11 |
 
 ## 环境
 
