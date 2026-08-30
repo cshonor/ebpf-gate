@@ -19,7 +19,7 @@ eBPF 学习仓库 —— 从内核层面理解并使用 eBPF（HFT / 嵌入式�
 |---|---|---|---|
 | 01 | bpftrace 快速体感 | ✅ | Learning eBPF Ch1–2 入门 |
 | 02 | libbpf：手写第一个 BPF 程序（tracepoint，无 CO-RE 绕行方案） | ✅ | Ch3 + Ch6（verifier 实录）+ Ch5 §3.5（无 BTF 绕行） |
-| 03 | map / ringbuf 数据通道 → 《Learning eBPF》随书代码实验 | 🟡 | lab03 ✅（map+ringbuf，Ch2 §2–3）；bpf syscall / CO-RE 待做 |
+| 03 | map / ringbuf 数据通道 → 《Learning eBPF》随书代码实验 | ✅ | lab03（map+ringbuf）+ lab04（bpf syscall strace 拆解，Ch4 §1–2）；CO-RE 待做 |
 | 04 | kprobe / XDP / tc 挂钩点实战 | ⬜ | Ch7 附加类型 + Ch8 网络 |
 | 05 | 延迟观测（sched、off-cpu、网络栈追踪） | ⬜ | Gregg 工具谱系 → HFT 落地 |
 
