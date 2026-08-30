@@ -76,5 +76,10 @@ probe_read_user → trace_printk。**我们手写的，就是它的代码生成�
 ## 遇到的坑（实录）
 
 - rpi 内核没开 `CONFIG_DEBUG_INFO_BTF` → 用不了 `vmlinux.h`，本文的 format 手工法就是绕行方案
+- `clang -target bpf` 找不到 `asm/types.h` → 编译命令要加
+  `-D__TARGET_ARCH_arm64 -I/usr/include/aarch64-linux-gnu`
+- **syscall tracepoint 的 ctx 只开放参数区（offset ≥ 8）**：直接读 `common_pid`（offset 4）被
+  verifier 拒绝：`invalid bpf_context access off=4 size=4`。参数区（如 `filename`）可以直读。
+  拿 pid 用 `bpf_get_current_pid_tgid() >> 32`
 - `bpf_trace_printk` 的 `%s` 参数是**指针**，传本地数组 `fname` 没问题，但传用户指针就不行
   （所以必须先 probe_read 再打印，不能一步到位）

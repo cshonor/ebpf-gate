@@ -39,12 +39,18 @@ int trace_openat(struct sys_enter_openat_ctx *ctx)
 {
 	char fname[64] = {};
 
+	/* 实测坑: syscall tracepoint 的 ctx 只开放参数区 (offset >= 8),
+	 * common 头字段 (common_pid 等) 直接读会被 verifier 拒:
+	 *   "invalid bpf_context access off=4 size=4"
+	 * 拿 pid 的正确姿势是 helper —— 返回值高 32 位是 tgid(即用户视角的 pid) */
+	int pid = bpf_get_current_pid_tgid() >> 32;
+
 	/* filename 是用户态指针!
 	 * 内核里直接解引用用户地址会崩, 必须用 helper 安全拷贝
 	 * (verifier 会在加载时强制检查这一点) */
 	bpf_probe_read_user_str(fname, sizeof(fname), ctx->filename);
 
 	char fmt[] = "openat(pid=%d): %s\n";
-	bpf_trace_printk(fmt, sizeof(fmt), ctx->common_pid, fname);
+	bpf_trace_printk(fmt, sizeof(fmt), pid, fname);
 	return 0;
 }
