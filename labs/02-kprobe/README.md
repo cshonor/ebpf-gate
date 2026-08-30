@@ -4,8 +4,8 @@
 > 这个实验就在内核入口处把它截下来。**没有 BTF 也完全能跑。**
 >
 > **理论对照**（hft 仓库读书笔记）：verifier 拒绝实录见
-> [Learning eBPF Ch6 §3.6](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/learning-ebpf/chapter-06-verifier/notes/6.3_典型验证失败与完成保证.md)；
-> 无 BTF 内核的绕行方案见 [Ch5 §3.5](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/learning-ebpf/chapter-05-core-btf-libbpf/notes/5.3_BTF与vmlinux.md)。
+> [Learning eBPF Ch6 §3.6](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/learning-ebpf/chapter-06-verifier/notes/6.2_典型验证失败与完成保证.md)；
+> 无 BTF 内核的绕行方案见 [Ch5 §3.5](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/learning-ebpf/chapter-05-core-btf-libbpf/notes/5.2_BTF与vmlinux.md)。
 
 ## 文件
 
