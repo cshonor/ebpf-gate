@@ -20,6 +20,10 @@ struct event {
 	char fname[64];
 };
 
+/* 计数表：dump 时对比 tracepoint 版（lab03）的数字是否一致。
+ * key=pid 的 hash；注意 uprobe 高频钩子不要用 ringbuf，kprobe 频率
+ * 相对可控所以双通道并存。 */
+
 struct {
 	__uint(type, BPF_MAP_TYPE_RINGBUF);
 	__uint(max_entries, 4096);
@@ -33,11 +37,20 @@ struct {
 	__uint(max_entries, 1024);
 } kprobe_counts SEC(".maps");
 
-SEC("kprobe/do_sys_openat")
+/* 真机符号勘察（6.18.34+rpt-rpi，bpftrace 验证）：
+ *   openat 系统调用 → do_sys_openat2（实测 ls 触发 160 次）
+ *   do_sys_open     → 只有老式 open syscall 才走（实测 0 次）
+ *
+ * ⚠️ 关键一手发现：6.18 的 do_sys_openat2 签名和旧版书里不同——
+ *   实测（bpftrace str(uptr(arg1)) 直接读出路径）PARM2 就是
+ *   const char __user *filename（用户态指针），
+ *   不是 struct filename*（那是更内层的 do_filp_open 时代产物）。
+ *   所以这里和 tracepoint 一样：一次 probe_read_user_str 即可。
+ *   kprobe 勘察的方法论：先 bpftrace 探参数语义，再写 C。 */
+SEC("kprobe/do_sys_openat2")
 int kp_openat(struct user_pt_regs *ctx)
 {
-	/* do_sys_openat(int dfd, const char __user *filename, struct open_how *how)
-	 * PARM1=dfd  PARM2=filename  PARM3=how */
+	/* PARM2 = filename（用户态指针，bpftrace 实测验证） */
 	const char *filename = (const char *)PT_REGS_PARM2(ctx);
 	struct event *e;
 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
@@ -54,7 +67,7 @@ int kp_openat(struct user_pt_regs *ctx)
 		return 0;
 	e->pid = pid;
 	bpf_get_current_comm(e->comm, sizeof(e->comm));
-	/* kprobe 里同样必须用 helper 拷用户态指针 */
+	/* 用户态指针必须经 helper 安全拷贝（同 lab02/03 的 tracepoint） */
 	bpf_probe_read_user_str(e->fname, sizeof(e->fname), filename);
 	bpf_ringbuf_submit(e, 0);
 	return 0;

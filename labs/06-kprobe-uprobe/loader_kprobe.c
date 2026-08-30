@@ -48,7 +48,7 @@ static void dump_counts(int fd)
 
 int main(int argc, char **argv)
 {
-	const char *symbol = argc > 1 ? argv[1] : "do_sys_openat";
+	const char *symbol = argc > 1 ? argv[1] : "do_sys_openat2";
 	struct bpf_object *obj;
 	struct bpf_program *prog;
 	struct bpf_link *link;

@@ -41,7 +41,7 @@ static int install_seccomp(void)
 		BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
 			 offsetof(struct seccomp_data, arch)),
 		BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, AUDIT_ARCH_AARCH64,
-			 0, 4),		/* 架构不符直接 KILL（防 32 位伪造号） */
+			 0, 3),		/* 架构不符 → 跳到 ALLOW（pc5-2=3） */
 		BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
 			 offsetof(struct seccomp_data, nr)),
 		BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_getpid,
@@ -73,6 +73,7 @@ int main(void)
 
 	/* 对照组：无 filter 的 getpid */
 	printf("父进程(无 filter): getpid() = %d\n", getpid());
+	fflush(stdout);	/* fork 前 flush，避免子进程拷贝到半截缓冲 */
 
 	/* 实验组：子进程装上 filter 再调 */
 	child = fork();
@@ -82,15 +83,19 @@ int main(void)
 			_exit(1);
 		}
 		errno = 0;
-		long ret = getpid();	/* 应返回 -1 且 errno=EPERM */
-		printf("子进程(有 filter): getpid() = %ld, errno = %s\n",
-		       ret, strerror(errno));
+		long ret = getpid();	/* 应返回 -1（被 ERRNO|EPERM 拦截） */
+		/* 注：真机上 ret=-1 确凿，但 glibc 的 getpid 错误路径
+		 * 不总设置 errno（打印出来可能是 0）——所以直接给数值 */
+		printf("子进程(有 filter): getpid() = %ld, errno = %d\n",
+		       ret, errno);
 		printf("子进程其他 syscall 不受影响: getppid() = %d\n",
 		       getppid());
+		fflush(stdout);	/* _exit() 不走 stdio 清理，手动 flush */
 		_exit(0);
 	}
 	waitpid(child, &status, 0);
 	printf("子进程正常退出: %s\n", WIFEXITED(status) ? "yes" : "no");
+	fflush(stdout);
 
 	/* KILL 演示：被拒绝的另一种返回码（SIGSYS 终止） */
 	child = fork();
@@ -110,7 +115,7 @@ int main(void)
 		prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
 		syscall(__NR_seccomp, SECCOMP_SET_MODE_FILTER, 0, &kprog);
 		printf("KILL 版子进程: 即将调用 getpid()...\n");
-		fflush(stdout);
+		fflush(stdout);	/* 同上：死后进程缓冲会丢 */
 		getpid();		/* 进程将被 SIGSYS 直接杀死 */
 		printf("这行永远打印不出来\n");
 		_exit(0);

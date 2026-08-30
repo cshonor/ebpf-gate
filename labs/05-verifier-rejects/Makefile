@@ -5,18 +5,19 @@ REJECTS := 01_uninit_stack 02_null_deref 03_unreachable \
 	   04_bad_ctx_offset 05_bounded_loop 06_unbounded_loop
 OBJS := $(patsubst %,rejects/%.o,$(REJECTS))
 
-# 注意：03_unreachable 必须用 -O0，否则 clang 消除死代码后程序「意外合法」
-#      —— 这本身是个值得记录的对照：同一个 .c 在 -O2 下通过、-O0 下被拒。
-O0_TARGET := rejects/03_unreachable.o
+# 01/03 必须 -O0：-O2 会把「未初始化读」「return 后死代码」在编译期洗白
+#      （clang 直接优化成合法代码），verifier 根本看不到非法形态。
+#      这本身就是个值得记录的对照：同一个 .c 在 -O2 下通过、-O0 下被拒。
+O0_TARGETS := rejects/01_uninit_stack.o rejects/03_unreachable.o
 
 all: $(OBJS) try_load
 
-$(filter-out $(O0_TARGET),$(OBJS)): rejects/%.o: rejects/%.c
+$(filter-out $(O0_TARGETS),$(OBJS)): rejects/%.o: rejects/%.c
 	$(CLANG) -target bpf -D__TARGET_ARCH_arm64 \
 		-I/usr/include/$(shell uname -m)-linux-gnu \
 		-O2 -g -c $< -o $@
 
-$(O0_TARGET): rejects/03_unreachable.c
+$(O0_TARGETS): rejects/%.o: rejects/%.c
 	$(CLANG) -target bpf -D__TARGET_ARCH_arm64 \
 		-I/usr/include/$(shell uname -m)-linux-gnu \
 		-O0 -g -c $< -o $@

@@ -12,6 +12,7 @@
 #include <bpf/libbpf.h>
 #include <bpf/bpf.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +21,17 @@
 
 static volatile sig_atomic_t stop = 0;
 static void on_sig(int sig) { stop = 1; }
+
+/* 【真机结论 2026-08-30】树莓派官方内核未开 UPROBE：
+ *   /boot/config-6.18.34+rpt-rpi-2712: "# CONFIG_UPROBE_EVENTS is not set"
+ *   表现：attach 时 ENOENT，/sys/kernel/tracing/uprobe_events 不存在
+ *   （kallsyms 里只剩 uprobe_multi 的 BPF 符号桩）。
+ * 要跑本实验需自编内核开 CONFIG_UPROBE_EVENTS=y，或换发行版内核。
+ * 本 loader 保留完整代码形态，检测到不支持时给出明确提示。 */
+static int uprobe_supported(void)
+{
+	return access("/sys/kernel/tracing/uprobe_events", F_OK) == 0;
+}
 
 /* 从 /proc/self/maps 里解析本进程加载的 libc 路径 */
 static const char *find_libc(const char *fallback)
@@ -82,6 +94,14 @@ int main(int argc, char **argv)
 	);
 	int err;
 
+	if (!uprobe_supported()) {
+		fprintf(stderr,
+			"本内核未开 CONFIG_UPROBE_EVENTS（树莓派官方内核默认），\n"
+			"uprobe 无法注册。程序与加载器代码保留作为对照，\n"
+			"详见本 lab README 的「真机限制」一节。\n");
+		return 77;	/* EX_NOPERM 风格退出码：功能不可用 */
+	}
+
 	printf("目标: uprobe @ %s : %s\n", libc, opts.func_name);
 
 	obj = bpf_object__open_file("uprobe.bpf.o", NULL);
@@ -96,8 +116,10 @@ int main(int argc, char **argv)
 	}
 	prog = bpf_object__find_program_by_name(obj, "up_malloc");
 
-	/* pid = -1: 追踪所有进程的 malloc */
-	link = bpf_program__attach_uprobe(prog, -1, libc, 0, &opts);
+	/* pid = -1: 追踪所有进程的 malloc
+	 * （libbpf 1.5 的 API：带 opts 的版本叫 attach_uprobe_opts，
+	 *  不带 opts 的老签名第一个 bool 参数是 retprobe） */
+	link = bpf_program__attach_uprobe_opts(prog, -1, libc, 0, &opts);
 	if (!link) {
 		fprintf(stderr, "attach uprobe failed: %s\n", strerror(errno));
 		return 1;

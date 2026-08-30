@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <net/if.h>
+#include <net/ethernet.h>	/* ETH_P_ALL */
 #include <netpacket/packet.h>
 #include <signal.h>
 #include <stdio.h>

@@ -7,6 +7,8 @@
 #include <bpf/libbpf.h>
 #include <bpf/bpf.h>
 #include <errno.h>
+#include <linux/if_link.h>	/* XDP_FLAGS_SKB_MODE */
+#include <net/if.h>		/* if_nametoindex */
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
