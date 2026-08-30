@@ -1,0 +1,7 @@
+# eBPF 学习环境默认配置
+clang-format
+.idea/
+.vscode/
+*.o
+*.d
+build/
