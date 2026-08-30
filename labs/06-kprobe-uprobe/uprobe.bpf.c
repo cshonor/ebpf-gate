@@ -9,6 +9,7 @@
 // 按 size 分桶计数，体会「高频钩子选 map 而非事件流」的取舍。
 
 #include <linux/bpf.h>
+#include <asm/ptrace.h>		/* struct user_pt_regs: arm64 用户态头文件 */
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
 
@@ -20,7 +21,7 @@ struct {
 } malloc_by_size SEC(".maps");
 
 SEC("uprobe")
-int up_malloc(struct pt_regs *ctx)
+int up_malloc(struct user_pt_regs *ctx)
 {
 	__u64 size = PT_REGS_PARM1(ctx);
 	__u64 one = 1, *count;

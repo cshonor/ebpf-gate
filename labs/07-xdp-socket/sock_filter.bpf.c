@@ -15,7 +15,7 @@
 struct {
 	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
 	__uint(key_size, sizeof(__u32));
-	__uint(value_size, sizeof(__u64) * 2));	/* [0]seen [1]passed */
+	__uint(value_size, sizeof(__u64) * 2);	/* [0]seen [1]passed */
 	__uint(max_entries, 1);
 } stats SEC(".maps");
 

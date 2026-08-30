@@ -17,6 +17,7 @@
 #include <linux/seccomp.h>
 #include <linux/unistd.h>
 #include <signal.h>
+#include <stddef.h>		/* offsetof */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

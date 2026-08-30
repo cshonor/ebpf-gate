@@ -10,6 +10,7 @@
 // （bpf/bpf_tracing.h 按 __TARGET_ARCH_arm64 展开），不需要 vmlinux.h。
 
 #include <linux/bpf.h>
+#include <asm/ptrace.h>		/* struct user_pt_regs: arm64 用户态头文件 */
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
 
@@ -33,7 +34,7 @@ struct {
 } kprobe_counts SEC(".maps");
 
 SEC("kprobe/do_sys_openat")
-int kp_openat(struct pt_regs *ctx)
+int kp_openat(struct user_pt_regs *ctx)
 {
 	/* do_sys_openat(int dfd, const char __user *filename, struct open_how *how)
 	 * PARM1=dfd  PARM2=filename  PARM3=how */
