@@ -8,8 +8,8 @@ eBPF 学习仓库 —— 从内核层面理解并使用 eBPF（HFT / 嵌入式�
 
 | 理论（hft 仓库，读书笔记） | 实践（本仓库，动手实验） |
 |---|---|
-| [learning-ebpf/](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/learning-ebpf)（Liz Rice，11 章精读） | labs/——随进度逐一做，实验结论回灌笔记对应章节 |
-| [bpf-performance-tools/](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/bpf-performance-tools)（Brendan Gregg） | 阶段 05 延迟观测的参考方法论 |
+| [learning-ebpf/](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/01-learning-ebpf)（Liz Rice，11 章精读） | labs/——随进度逐一做，实验结论回灌笔记对应章节 |
+| [bpf-performance-tools/](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/02-bpf-performance-tools)（Brendan Gregg） | 阶段 05 延迟观测的参考方法论 |
 
 工作流：**读书 → 本仓库做 lab → 踩坑 → 把一手结论回灌笔记**（首批已于 2026-08 回灌 Ch2/Ch3/Ch5/Ch6）。
 

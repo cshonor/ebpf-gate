@@ -6,8 +6,8 @@
 > 真机可行性（结论：这台内核做不了，但限制本身很有信息量）。
 >
 > **理论对照**（hft 仓库读书笔记）：
-> [Ch7 程序附加类型](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/learning-ebpf/chapter-07-program-attachment-types) ·
-> [Ch8 追踪](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/learning-ebpf/chapter-08-tracing)
+> [Ch7 程序附加类型](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/01-learning-ebpf/chapter-07-program-attachment-types) ·
+> [Ch8 追踪](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/01-learning-ebpf/chapter-08-tracing)
 
 ## 代码结构
 

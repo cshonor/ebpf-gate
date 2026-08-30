@@ -6,7 +6,7 @@
 > 的一半价值就在这些意外里。
 >
 > **理论对照**（hft 仓库读书笔记）：
-> [Ch6 §2 典型验证失败与完成保证](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/learning-ebpf/chapter-06-verifier/notes/6.2_典型验证失败与完成保证.md)
+> [Ch6 §2 典型验证失败与完成保证](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/01-learning-ebpf/chapter-06-verifier/notes/6.2_典型验证失败与完成保证.md)
 
 ## 代码结构
 

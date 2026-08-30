@@ -6,7 +6,7 @@
 > 真活儿。读 syscall 序列 = 读 libbpf 与内核的"能力协商协议"。
 >
 > **理论对照**（hft 仓库读书笔记）：
-> [Ch4 §1 bpf总览与strace实例](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/learning-ebpf/chapter-04-bpf-syscall/notes/4.1_bpf总览与strace实例.md)
+> [Ch4 §1 bpf总览与strace实例](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/01-learning-ebpf/chapter-04-bpf-syscall/notes/4.1_bpf总览与strace实例.md)
 
 ## 代码结构
 

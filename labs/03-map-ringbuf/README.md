@@ -5,8 +5,8 @@
 > **map 拉模式**（用户态来取）和 **ring buffer 推模式**（内核来送）。
 >
 > **理论对照**（hft 仓库读书笔记）：
-> [Ch2 §2 BPF Maps](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/learning-ebpf/chapter-02-hello-world/notes/2.1_HelloWorld与数据通道.md) 与
-> [Ch2 §3 Perf/RingBuffer](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/learning-ebpf/chapter-02-hello-world/notes/2.1_HelloWorld与数据通道.md)
+> [Ch2 §2 BPF Maps](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/01-learning-ebpf/chapter-02-hello-world/notes/2.1_HelloWorld与数据通道.md) 与
+> [Ch2 §3 Perf/RingBuffer](https://github.com/cshonor/hft-embedded-linux-study/blob/main/06.7-bpf-observability/01-learning-ebpf/chapter-02-hello-world/notes/2.1_HelloWorld与数据通道.md)
 > 已合并到同一文件 `2.1_HelloWorld与数据通道.md`。
 
 ## 代码结构

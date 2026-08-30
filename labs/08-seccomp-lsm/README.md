@@ -6,7 +6,7 @@
 > 的可行性（结论：本内核可检测、暂不可运行）。
 >
 > **理论对照**（hft 仓库读书笔记）：
-> [Ch9 安全](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/learning-ebpf/chapter-09-security)
+> [Ch9 安全](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/01-learning-ebpf/chapter-09-security)
 
 ## 代码结构
 

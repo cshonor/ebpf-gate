@@ -6,7 +6,7 @@
 > 按 ethertype 过滤，两者都是"在数据拷贝给用户态之前动手"。
 >
 > **理论对照**（hft 仓库读书笔记）：
-> [Ch10 网络](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/learning-ebpf/chapter-10-networking)
+> [Ch10 网络](https://github.com/cshonor/hft-embedded-linux-study/tree/main/06.7-bpf-observability/01-learning-ebpf/chapter-10-networking)
 
 ## 代码结构
 
