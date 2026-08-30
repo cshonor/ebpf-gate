@@ -6,16 +6,17 @@ eBPF 学习仓库 —— 从内核层面理解并使用 eBPF（HFT / 嵌入式�
 
 | 阶段 | 内容 | 状态 |
 |---|---|---|
-| 01 | bpftrace 快速体感 | ⬜ |
-| 02 | libbpf + CO-RE：手写第一个 BPF 程序 | ⬜ |
+| 01 | bpftrace 快速体感 | ✅ |
+| 02 | libbpf：手写第一个 BPF 程序（tracepoint，无 CO-RE 绕行方案） | ✅ |
 | 03 | 《Learning eBPF》随书代码实验 | ⬜ |
-| 04 | kprobe / tracepoint / XDP / tc 挂钩点实战 | ⬜ |
+| 04 | kprobe / XDP / tc 挂钩点实战 | ⬜ |
 | 05 | 延迟观测（sched、off-cpu、网络栈追踪） | ⬜ |
 
 ## 环境
 
-- Linux 内核 >= 5.15（WSL2 需自定义内核开启 `CONFIG_DEBUG_INFO_BTF`）
-- 工具链：clang/LLVM、libbpf-dev、bpftool
+- 实机：树莓派 5（aarch64，内核 6.18.34+rpt-rpi-2712，Debian 13 trixie）
+- 工具链：bpftrace 0.23.2 / clang 19.1.7 / bpftool 7.7.0 / libbpf 1.5
+- ⚠️ rpi 内核未开 BTF：CO-RE（vmlinux.h）不可用，实验用 tracefs format 手工法绕行
 
 ## 目录规划
 
