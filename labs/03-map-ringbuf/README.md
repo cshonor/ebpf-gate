@@ -39,20 +39,30 @@ sudo ./loader        # Ctrl+C 结束；结束时自动 dump HASH map 计数
 4. **ringbuf 满了不阻塞**：`bpf_ringbuf_reserve` 失败直接丢事件返回。
    内核路径上永远不能等用户态——这是与生俱来的背压模型。
 
-## 预期输出（真实捕获）
+## 实测输出（树莓派 5 · 6.18 内核 · 2026-08-30）
 
 ```
 === 实时事件流（RINGBUF 推模式），Ctrl+C 结束 ===
 PID     COMM             FILENAME
-1501    gvfsd-metadata   /home/wzp/.config/gtk-3.0 ...
-170     labwc            /etc/ld.so.cache        ← 派上桌面自己就在产生事件
+1       systemd          /proc/self/fdinfo/51
+1       systemd          /proc/392/cgroup
+1       systemd          /proc/383/cgroup
 ...
 === open 次数统计（HASH map 拉模式 dump）===
 PID     COUNT
-170     12
-1501    3
+1       6
 ```
 
-## 坑点（实测追加）
+两条通道交叉验证：事件流条数 = map 计数，数据一致。
+（顺带看到：桌面闲置时最大的 openat 噪声源是 systemd 周期性轮询
+`/proc/self/fdinfo` 与各 cgroup——HFT 上做观测前先想清楚噪声底。）
 
-- 见 README"坑点"表：本 lab 实测遇到的坑与结论在提交记录里。
+## 坑点（实测实录）
+
+1. **`sudo git pull` 会让新目录变 root 属主** → 之后 `make` 报
+   `Permission denied` 写不了 `hello.bpf.o`。修法：`sudo chown -R wzp:wzp ~/ebpf-gate`。
+   教训：仓库操作别带 sudo，只有运行 loader 才需要。
+2. loader 忘 include `<errno.h>` → `-EINTR` 未声明（C 的老朋友）。
+3. **BTF 式 map 定义在无 BTF 内核上照常工作**——不是坑，是反直觉的
+   重要事实：map 定义用的 BTF 在 ELF 里（clang `-g` 生成），libbpf 从
+   对象文件解析；内核的 `CONFIG_DEBUG_INFO_BTF` 只有 CO-RE 才需要。
